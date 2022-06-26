@@ -22,7 +22,7 @@
 }
 
 .textBar {
-  border: var(--blackBorder);
+  border: var(--blackBorder, 1px solid black);
   border-radius: 2px;
   padding: 0.5rem;
 }
@@ -35,7 +35,7 @@
   border-radius: 2px;
   margin: 0.5rem 0;
   width: 4rem;
-  border: var(--blackBorder);
+  border: var(--blackBorder, 1px solid black);
   background-color: transparent;
 }
 
