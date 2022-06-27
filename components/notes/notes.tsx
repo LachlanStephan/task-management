@@ -88,6 +88,12 @@ const Notes: FC<Props> = (Props) => {
 
   const setInitialNote = () => {
     const initial = getLocal();
+
+    if (!initial) {
+      newNote();
+      return;
+    }
+
     setNotes(initial);
     setCurrNote(initial[0]);
 
@@ -106,7 +112,7 @@ const Notes: FC<Props> = (Props) => {
     if (local) {
       return JSON.parse(local);
     }
-    return [];
+    return false;
   };
 
   // add this to li val.content
