@@ -62,7 +62,7 @@ const Todos: FC<Props> = (Props) => {
     <>
       <aside className={styles.main}>
         <h1>{Props.title}</h1>
-        <label className={styles.label} htmlFor="addInput">Add</label>
+        <label className={styles.label} htmlFor="addInput"></label>
         <input
           placeholder="Todo..."
           className={styles.textBar}

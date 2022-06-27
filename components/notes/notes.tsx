@@ -1,7 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import styles from "./Notes.module.css";
 import todoStyles from "../todos/Todos.module.css";
-
 interface Props {
   title: string;
 }
@@ -16,7 +15,17 @@ const Notes: FC<Props> = (Props) => {
   const [currNote, setCurrNote] = useState<Note>();
   const [currText, setCurrText] = useState("");
 
+  const newNote = () => {
+    setCurrNote(undefined);
+    setCurrText("");
+  }
+
   const addNote = () => {
+    if (currNote) {
+      updateNote(currText);
+      return;
+    }
+
     const newId = assignId();
     const newData: Note = {
       id: newId,
@@ -24,7 +33,28 @@ const Notes: FC<Props> = (Props) => {
     }
     const x = [... notes];
     x.push(newData)
-    setNotes(x)
+    localStorage.setItem("notes", JSON.stringify(x));
+    setNotes(x);
+    setCurrNote(newData);
+  }
+
+  const updateNote = (newText: string) => {
+    if (currNote) {
+      const updatedNote: Note = {
+        id: currNote.id,
+        content: newText,
+      }
+      setCurrNote(updatedNote)
+      const x = [... notes];
+      for (let i = 0; i < x.length; i++) {
+        if (x[i].id === currNote.id) {
+          x[i].content = currText;
+        }
+      }
+      setNotes(x);
+      localStorage.removeItem("notes");
+      localStorage.setItem("notes", JSON.stringify(x));
+    }
   }
 
   const assignId = () => {
@@ -34,28 +64,44 @@ const Notes: FC<Props> = (Props) => {
 
   const updateText = (e: any) => {
     setCurrText(e.target.value)
-    console.log(currText)
   }
 
+  // TODO: THIS
   const removeNote = (id: number) => {
     //
   }
 
-  const selectNote = (id: number) => {
-    //
-  }
-
-  // this does not work - newCurr is corrext but setCurrNote is
-  // still the old note - not updating correctly
-  const swapNote = (target_id: number) => {
-    console.log(target_id);
-    console.log(notes)
+  // this does not work - newCurr is corrext but setCurrNote is still the old note - not updating correctly | Might not have to worry - we will be setting a default at some point - may fix it????
+  const selectNote = (target_id: number) => {
     const newCurr = notes.find(ele => ele.id === target_id);
-    console.log(newCurr)
+
     if (newCurr) {
       setCurrNote(newCurr)
+      setCurrText(newCurr.content)
     }
-    console.log(currNote);
+  }
+
+  const setInitialNote = () => {
+    const initial = getLocal();
+    setNotes(initial);
+    setCurrNote(initial[0]);
+
+    const curr: Note = {
+      id: initial[0].id,
+      content: initial[0].content,
+    }
+
+    setCurrNote(curr);
+    setCurrText(curr.content);
+  }
+
+  const getLocal = () => {
+    const local = localStorage.getItem("notes"); 
+
+    if (local) {
+      return JSON.parse(local);
+    }
+    return [];
   }
 
   // add this to li val.content
@@ -63,21 +109,32 @@ const Notes: FC<Props> = (Props) => {
     //
   }
 
-  const currNotes = notes.map((val, i) => { 
+  const addNoteWithEnter = (e: any) => {
+    //
+  }
+
+  useEffect(() => {
+    setInitialNote();
+  }, [])
+
+  const notesList = notes.map((val, i) => { 
     return (
-      <li id={val.id.toString()} onClick={() => swapNote(val.id)} key={val.id}>{val.content}</li>
+      <li id={val.id.toString()} onClick={() => selectNote(val.id)} key={val.id}>{val.content}</li>
     );
   });
 
   return (
     <aside className={styles.main}>
       <h1>{Props.title}</h1>
-      <label className={todoStyles.label} htmlFor="addNote">Add</label>
-      <textarea onChange={(e) => updateText(e)} className={styles.noteInput} id="addNote" placeholder="Note..." ></textarea>
+      <label className={todoStyles.label} htmlFor="addNote"></label>
+      <textarea value={currText} onChange={(e) => updateText(e)} className={styles.noteInput} id="addNote" placeholder="Note..." ></textarea>
 
-      <button onClick={addNote} className={todoStyles.addBtn}>Go</button>
+      <div className={styles.buttonContainer}>
+        <button onClick={addNote} className={todoStyles.addBtn}>{currNote ? "Edit": "Go"}</button>
+        <button onClick={newNote} className={todoStyles.addBtn}>New</button>
+      </div>
     <ul>
-      {currNotes}
+      {notesList}
     </ul>
     </aside>
   );

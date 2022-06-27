@@ -11,3 +11,13 @@
   padding: 1rem;
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.buttonContainer button {
+  padding: 0 0.5rem;
+  margin-right: 0.5rem;
+}
