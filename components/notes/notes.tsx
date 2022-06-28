@@ -57,11 +57,14 @@ const Notes: FC<Props> = (Props) => {
 
       setCurrNote(updatedNote);
       setNotes(x);
-
-      localStorage.removeItem("notes");
-      localStorage.setItem("notes", JSON.stringify(x));
+      updateLocal(x);
     }
   };
+
+  const updateLocal = (x: Note[]) => {
+    localStorage.removeItem("notes");
+    localStorage.setItem("notes", JSON.stringify(x));
+  }
 
   const assignId = () => {
     const newId = notes.length + 1;
@@ -70,11 +73,6 @@ const Notes: FC<Props> = (Props) => {
 
   const updateText = (e: any) => {
     setCurrText(e.target.value);
-  };
-
-  // TODO: THIS
-  const removeNote = (id: number) => {
-    //
   };
 
   const selectNote = (target_id: number) => {
@@ -116,12 +114,34 @@ const Notes: FC<Props> = (Props) => {
   };
 
   // add this to li val.content
-  const limitText = (title: string) => {
-    //
+  const limitText = (title: string, limit: number) => {
+    let x = title.split("");
+
+    if (x.length <= limit) {
+      return x;
+    }
+
+    const len = x.length;
+    const remaining = (len - limit)
+    x.splice(limit, remaining);
+    x.join();
+    return x;
   };
 
-  const addNoteWithEnter = (e: any) => {
-    //
+  const checkKeyCombos = (e: any) => {
+    if (e.ctrlKey && e.keyCode === 13) {
+      addNote();
+    }
+    if (e.shiftKey && e.keyCode === 13) {
+      newNote();
+    }
+  };
+
+  const removeNote = (i: number) => {
+    const x = [... notes];
+    x.splice(i, 1); 
+    setNotes(x)
+    updateLocal(x);
   };
 
   useEffect(() => {
@@ -130,13 +150,19 @@ const Notes: FC<Props> = (Props) => {
 
   const notesList = notes.map((val, i) => {
     return (
+    <>
+    <div className={styles.listContainer}>
+    <button onClick={() => removeNote(i)} className={todoStyles.remove}>X</button>
       <li
+        className={styles.li}
         id={val.id.toString()}
         onClick={() => selectNote(val.id)}
         key={i}
       >
-        {val.content}
+        {limitText(val.content, 15)}
       </li>
+</div>
+</>
     );
   });
 
@@ -147,6 +173,7 @@ const Notes: FC<Props> = (Props) => {
       <textarea
         value={currText}
         onChange={(e) => updateText(e)}
+        onKeyDown={(e) => checkKeyCombos(e)}
         className={styles.noteInput}
         id="addNote"
         placeholder="Note..."
@@ -160,7 +187,7 @@ const Notes: FC<Props> = (Props) => {
           New
         </button>
       </div>
-      <ul>{notesList}</ul>
+      <ul className={styles.ul}>{notesList}</ul>
     </aside>
   );
 };

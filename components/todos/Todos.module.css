@@ -44,7 +44,7 @@
   width: 1.5rem;
   min-height: 1.5rem;
   min-width: 1.5rem;
-  border: var(--blackBorder);
+  border: var(--blackBorder, 1px solid black);
   border-radius: 5px;
   background-color: pink;
 }
@@ -53,3 +53,8 @@
   cursor: pointer;
 }
 
+@media only screen and (max-width: 600px) {
+  .main {
+    width: 90%;
+  }
+}

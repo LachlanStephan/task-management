@@ -21,3 +21,34 @@
   padding: 0 0.5rem;
   margin-right: 0.5rem;
 }
+
+.ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.li {
+  margin: 1rem 0;
+  border: 1px solid black;
+  border-radius: 2px;
+  padding: 0.5rem;
+  min-width: 10rem;
+  max-width: 10rem;
+}
+
+.li:hover {
+  cursor: pointer;
+}
+
+.listContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 600px) {
+  .main {
+    width: 90%;
+  }
+}
