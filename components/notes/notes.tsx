@@ -64,7 +64,7 @@ const Notes: FC<Props> = (Props) => {
   const updateLocal = (x: Note[]) => {
     localStorage.removeItem("notes");
     localStorage.setItem("notes", JSON.stringify(x));
-  }
+  };
 
   const assignId = () => {
     const newId = notes.length + 1;
@@ -122,7 +122,7 @@ const Notes: FC<Props> = (Props) => {
     }
 
     const len = x.length;
-    const remaining = (len - limit)
+    const remaining = len - limit;
     x.splice(limit, remaining);
     x.join();
     return x;
@@ -138,10 +138,11 @@ const Notes: FC<Props> = (Props) => {
   };
 
   const removeNote = (i: number) => {
-    const x = [... notes];
-    x.splice(i, 1); 
-    setNotes(x)
+    const x = [...notes];
+    x.splice(i, 1);
+    setNotes(x);
     updateLocal(x);
+    newNote();
   };
 
   useEffect(() => {
@@ -150,19 +151,18 @@ const Notes: FC<Props> = (Props) => {
 
   const notesList = notes.map((val, i) => {
     return (
-    <>
-    <div className={styles.listContainer}>
-    <button onClick={() => removeNote(i)} className={todoStyles.remove}>X</button>
-      <li
-        className={styles.li}
-        id={val.id.toString()}
-        onClick={() => selectNote(val.id)}
-        key={i}
-      >
-        {limitText(val.content, 15)}
-      </li>
-</div>
-</>
+      <div key={i} className={styles.listContainer}>
+        <button onClick={() => removeNote(i)} className={todoStyles.remove}>
+          X
+        </button>
+        <li
+          className={styles.li}
+          id={val.id.toString()}
+          onClick={() => selectNote(val.id)}
+        >
+          {limitText(val.content, 20)}
+        </li>
+      </div>
     );
   });
 
